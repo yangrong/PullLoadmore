@@ -193,12 +193,13 @@
 <script type="text/javascript">
 var uiRefresh = $('.ui-refresh'),
     staute = $('.ui-refresh-down');
+var newLi = '<li data-highlight="ui-list-hover"><img src="./img/txt.png"><dl><dt>新增ul</dt><dd class="content">新华网深圳3月23日电（记者 赵瑞西）23日，深圳市南山区西里医院的大楼</dd><dd class="source">来源：新浪</dd></dl></li>'
 
 
 var elDrag = new dragUpdate(uiRefresh,
             function(){
                 setTimeout(function(){
-                    console.log('我是执行函数（外部传进来的函数执行）');
+                    $('.data-list')[0].appendChild($(newLi)[0]);
                     uiRefresh.trigger('loaded')
                 },300)
         },staute,'bottomUpdate');
