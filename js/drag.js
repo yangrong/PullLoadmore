@@ -77,8 +77,8 @@
     return (this._isLoading()&&((this._endY - this._startY<-20) && this.updateDir == 'bottomUpdate'  ||  (this._endY - this._startY >20 ) && this.updateDir == 'topUpdate'));
   }
  
- dragUpdate.prototype._isClickstate = function() {
-    return ( (this._startY==this._endY)&&(this._startY+this.stateY > this.scrollH  && this.updateDir == 'bottomUpdate' || this._isLoading() && this.updateDir == 'topUpdate' &&  this._startY < this.stateY) );
+  dragUpdate.prototype._isClickstate = function() {
+    return ((this._startY == this._endY) && (this._startY + this.stateY > this.scrollH && this.updateDir == 'bottomUpdate' || this._isLoading() && this.updateDir == 'topUpdate' && this._startY < this.stateY));
   }
   dragUpdate.prototype.changeCss = function(load_state) {
     switch (load_state) {
@@ -88,7 +88,7 @@
         break;
       case 'loading':
         $('.ui-refresh-label').html('加载中...');
-        console.log('loading');
+        // console.log('loading');
         break;
       case 'disable':
         $('.ui-refresh-label').html('没有更多内容了');
