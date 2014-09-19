@@ -24,124 +24,139 @@
     this._startY;
     this._moveY;
     this._endY;
-    this._touchmoveSwitch=true;
+    this._touchmoveSwitch = true;
   }
-  dragUpdate.prototype.init = function() {
-    var _this = this;
-    _this.el.on('touchstart touchmove touchend', function(e) {
-      _this._eventHandler(e);
-    });
-    if (!!_this.state) {
-      _this.state.html('<span class="ui-refresh-icon"></span><span class="ui-refresh-label">加载更多</span>');
-      _this.scrollH = document.body.scrollHeight;
-      _this.stateY = _this.state.height();
-       _this.state.on('touchend', function(e) {
-         e.stopPropagation();
-        _this.changeCss('loading');
-        _this.fn();
-    });
-    }
-    _this.el.on('loaded',function(){
+  dragUpdate.prototype = {
+    init: function() {
+      var _this = this;
+      _this.el.on('touchstart touchmove touchend', function(e) {
+        _this._eventHandler(e);
+      });
       if (!!_this.state) {
-        console.log('我是结束函数');
-        _this.changeCss('loaded');
+        _this.state.html('<span class="ui-refresh-icon"></span><span class="ui-refresh-label">加载更多</span>');
+        _this.scrollH = document.body.scrollHeight;
+        _this.stateY = _this.state.height();
+        _this.state.on('touchend', function(e) {
+          e.stopPropagation();
+          _this.changeCss('loading');
+          _this.fn();
+        });
       }
-      _this.scrollH = document.body.scrollHeight
-    })
-    
-  }
-  dragUpdate.prototype._startHandler = function(e) {
-    this._startY = e.touches[0].pageY;
-  }
-  dragUpdate.prototype._moveHandler = function(e) {
-    this._moveY = e.touches[0].pageY;
-  }
-  dragUpdate.prototype._endHandler = function(e) {
-    this._endY = e.changedTouches[0].pageY;
-  }
-  dragUpdate.prototype._isOnBottom = function() {
-    return ($('body')[0].scrollTop + this.clientH == this.scrollH);
-  }
-  dragUpdate.prototype._isOnTop = function() {
-    return ($('body')[0].scrollTop == 0);
-  }
-  dragUpdate.prototype._isLoading = function() {
-    return (this.updateDir == 'bottomUpdate' && this._isOnBottom() || this.updateDir == 'topUpdate' && this._isOnTop());
-  }
+      _this.el.on('loaded', function() {
+        if (!!_this.state) {
+          console.log('我是结束函数');
+          _this.changeCss('loaded');
+        }
+        _this.scrollH = document.body.scrollHeight
+      })
 
-  dragUpdate.prototype._isDirRight = function() {
-    return ((this._moveY - this._startY) > 0 && this.updateDir == 'topUpdate' || (this._moveY - this._startY) < 0 && this.updateDir == 'bottomUpdate');
-  }
+    },
 
-  dragUpdate.prototype._isTouchendDo = function() {
-    return (this._isLoading()&&((this._endY - this._startY<-20) && this.updateDir == 'bottomUpdate'  ||  (this._endY - this._startY >20 ) && this.updateDir == 'topUpdate'));
-  }
- 
-  dragUpdate.prototype._isClickstate = function() {
-    return ((this._startY == this._endY) && (this._startY + this.stateY > this.scrollH && this.updateDir == 'bottomUpdate' || this._isLoading() && this.updateDir == 'topUpdate' && this._startY < this.stateY));
-  }
-  dragUpdate.prototype.changeCss = function(load_state) {
-    switch (load_state) {
-      case 'loaded':
-        $('.ui-refresh-label').html('加载更多');
-        console.log('loaded');
-        break;
-      case 'loading':
-        $('.ui-refresh-label').html('加载中...');
-        // console.log('loading');
-        break;
-      case 'disable':
-        $('.ui-refresh-label').html('没有更多内容了');
-        break;
-    }
+    _startHandler: function(e) {
+      this._startY = e.touches[0].pageY;
+    },
 
-  }
-  dragUpdate.prototype._eventHandler = function(e,isUiRefresh) {
-    var _this = this;
-    switch (e.type) {
-      /*触屏开始的时候获取最初的位置*/
-      case 'touchstart':
-        _this._startHandler(e);
-        // console.log(_this._startY)
-        break;
-        /* touchmove 处理加载中过度阶段的css控制显示逻辑。*/
+    _moveHandler: function(e) {
+      this._moveY = e.touches[0].pageY;
+    },
+
+    _endHandler: function(e) {
+      this._endY = e.changedTouches[0].pageY;
+    },
+
+    _isOnBottom: function() {
+      return ($('body')[0].scrollTop + this.clientH == this.scrollH);
+    },
+
+    _isOnTop: function() {
+      return ($('body')[0].scrollTop == 0);
+    },
+
+    _isLoading: function() {
+      return (this.updateDir == 'bottomUpdate' && this._isOnBottom() || this.updateDir == 'topUpdate' && this._isOnTop());
+    },
+
+    _isDirRight: function() {
+      return ((this._moveY - this._startY) > 0 && this.updateDir == 'topUpdate' || (this._moveY - this._startY) < 0 && this.updateDir == 'bottomUpdate');
+    },
+
+    _isTouchendDo: function() {
+      return (this._isLoading() && ((this._endY - this._startY < -20) && this.updateDir == 'bottomUpdate' || (this._endY - this._startY > 20) && this.updateDir == 'topUpdate'));
+    },
+
+
+    _isClickstate: function() {
+      return ((this._startY == this._endY) && (this._startY + this.stateY > this.scrollH && this.updateDir == 'bottomUpdate' || this._isLoading() && this.updateDir == 'topUpdate' && this._startY < this.stateY));
+    },
+
+    changeCss: function(load_state) {
+      switch (load_state) {
+        case 'loaded':
+          $('.ui-refresh-label').html('加载更多');
+          console.log('loaded');
+          break;
+        case 'loading':
+          $('.ui-refresh-label').html('加载中...');
+          // console.log('loading');
+          break;
+        case 'disable':
+          $('.ui-refresh-label').html('没有更多内容了');
+          break;
+      }
+
+    },
+
+    _eventHandler: function(e, isUiRefresh) {
+      var _this = this;
+      switch (e.type) {
+        /*触屏开始的时候获取最初的位置*/
+        case 'touchstart':
+          _this._startHandler(e);
+          // console.log(_this._startY)
+          break;
+          /* touchmove 处理加载中过度阶段的css控制显示逻辑。*/
         case 'touchmove':
-         _this._moveHandler(e);
-          if (_this._isLoading()&&_this._touchmoveSwitch&&_this._isDirRight()) {
+          _this._moveHandler(e);
+          if (_this._isLoading() && _this._touchmoveSwitch && _this._isDirRight()) {
             _this._touchmoveSwitch = false;
             /*这里的判断手势方向，
              * 下拉加载： 页面滚动在浏览器的顶部的时候，向下拉处理
              * 上拉加载： 页面滚动在浏览器的顶部的时候，向上拉处理
              * 这里处理是为了避免，在临界点的位置的时候，touchmove触发
              */
-            if ( !!_this.state ) {
-                _this.changeCss('loading');
+            if (!!_this.state) {
+              _this.changeCss('loading');
             }
-          
-        }
-      break;
-      /*触屏结束了之后，清除定时器
-       *执行endHandler()；
-       */
-      case 'touchend':
-      /*打开touchmove触发的时候关闭的开关*/
-        _this._touchmoveSwitch = true;
-        _this._endHandler(e);
-        /* 判断点击事件是否在底部刷新的位置*/
-        if (_this._isTouchendDo()) {
-      
-          /*
-           *一般的情况下，在touchmove的情况下 显示正在加载的状态
-           *当事件只触发touchstart和touchend的时候，就是类似点击的时候，也要触发
+
+          }
+          break;
+          /*触屏结束了之后，清除定时器
+           *执行endHandler()；
            */
-          _this.fn();
-          
-        }
-        break;
+        case 'touchend':
+          /*打开touchmove触发的时候关闭的开关*/
+          _this._touchmoveSwitch = true;
+          _this._endHandler(e);
+          /* 判断点击事件是否在底部刷新的位置*/
+          if (_this._isTouchendDo()) {
+
+            /*
+             *一般的情况下，在touchmove的情况下 显示正在加载的状态
+             *当事件只触发touchstart和touchend的时候，就是类似点击的时候，也要触发
+             */
+            _this.fn();
+
+          }
+          break;
+      }
+
     }
+    /*end  of  _eventHandler*/
 
   }
-  /*end  of  _eventHandler*/
+
+
+
   window.dragUpdate = dragUpdate;
 
-})();
+})()
